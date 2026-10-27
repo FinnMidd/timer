@@ -81,5 +81,24 @@ const updateFs = () => {
   const on = !!document.fullscreenElement;
   fsBtn.innerHTML = (on ? ICONS.compress : ICONS.expand) + `<span>${on ? 'Exit fullscreen' : 'Fullscreen'}</span>`;
 };
-document.addEventListener('fullscreenchange', updateFs);
 updateFs();
+
+// In fullscreen, hide the controls after 10s without mouse movement
+const controls = document.querySelector('.controls');
+const IDLE_MS = 10000;
+let idleTimer;
+const setIdle = idle => {
+  controls.classList.toggle('idle', idle);
+  document.body.classList.toggle('idle-cursor', idle);
+};
+const wake = () => {
+  setIdle(false);
+  clearTimeout(idleTimer);
+  if (!document.fullscreenElement) return;
+  idleTimer = setTimeout(() => {
+    if (!controls.matches(':hover, :focus-within')) setIdle(true);
+    else wake();
+  }, IDLE_MS);
+};
+document.addEventListener('mousemove', wake);
+document.addEventListener('fullscreenchange', () => { updateFs(); wake(); });

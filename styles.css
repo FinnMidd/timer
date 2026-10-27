@@ -170,9 +170,9 @@ main {
 .controls svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .controls button:hover,
 .controls button:focus-visible { color: var(--digit); background: var(--shadow); outline: 0; }
-:fullscreen .controls { opacity: 0; transition: opacity .3s; }
-:fullscreen .controls:hover,
-:fullscreen .controls:focus-within { opacity: 1; }
+.controls { transition: opacity .3s; }
+.controls.idle { opacity: 0; pointer-events: none; }
+.idle-cursor { cursor: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .digit.flipping .flip-top,
