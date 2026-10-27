@@ -1,0 +1,180 @@
+:root {
+  --bg: #ffffff;
+  --card: #ecece9;
+  --card-top: #f3f3f1;
+  --card-bottom: #e4e4e1;
+  --digit: #1b1b1d;
+  --hinge: rgba(0, 0, 0, .025);
+  --shadow: rgba(0, 0, 0, .22);
+  --muted: #77777c;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #060607;
+    --card: #28282c;
+    --card-top: #303035;
+    --card-bottom: #212125;
+    --digit: #ededf0;
+    --hinge: rgba(0, 0, 0, .8);
+    --shadow: rgba(0, 0, 0, .55);
+    --muted: #84848c;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #060607;
+  --card: #28282c;
+  --card-top: #303035;
+  --card-bottom: #212125;
+  --digit: #ededf0;
+  --hinge: rgba(0, 0, 0, .15);
+  --shadow: rgba(0, 0, 0, .55);
+  --muted: #84848c;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--muted);
+  font-family: var(--font);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  transition: background .3s;
+}
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6vh;
+}
+
+/* Clock */
+.clock {
+  user-select: none;
+  -webkit-user-select: none;
+  --w: min(12.5vw, 24vh);
+  --h: calc(var(--w) * 1.35);
+  --r: calc(var(--w) * .09);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--w) * .12);
+}
+.colon {
+  width: calc(var(--w) * .09);
+  height: calc(var(--h) * .36);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.colon::before, .colon::after {
+  content: "";
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--digit);
+  opacity: .9;
+}
+.group { display: flex; gap: calc(var(--w) * .05); }
+
+.digit {
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  perspective: calc(var(--h) * 3);
+  font-size: calc(var(--h) * .9);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--digit);
+  border-radius: var(--r);
+  box-shadow: 0 calc(var(--h) * .05) calc(var(--h) * .12) var(--shadow);
+}
+.half {
+  position: absolute;
+  left: 0; right: 0;
+  height: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+.half span {
+  position: absolute;
+  left: 0; right: 0;
+  height: 200%;
+  line-height: var(--h);
+  text-align: center;
+}
+.top, .flip-top {
+  top: 0;
+  border-radius: var(--r) var(--r) 0 0;
+  background: linear-gradient(var(--card-top), var(--card));
+}
+.bottom, .flip-bottom {
+  bottom: 0;
+  border-radius: 0 0 var(--r) var(--r);
+  background: linear-gradient(var(--card), var(--card-bottom));
+}
+.top span, .flip-top span { top: 0; }
+.bottom span, .flip-bottom span { top: -100%; }
+
+/* Hinge */
+.digit::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: var(--hinge);
+  z-index: 5;
+}
+
+/* Flip animation */
+.flip-top, .flip-bottom { visibility: hidden; z-index: 2; }
+.flip-top { transform-origin: bottom; }
+.flip-bottom { transform-origin: top; transform: rotateX(90deg); }
+.digit.flipping .flip-top,
+.digit.flipping .flip-bottom { visibility: visible; }
+.digit.flipping .flip-top { animation: flip-top .25s ease-in forwards; }
+.digit.flipping .flip-bottom { animation: flip-bottom .25s .25s ease-out forwards; }
+@keyframes flip-top { to { transform: rotateX(-90deg); } }
+@keyframes flip-bottom { to { transform: rotateX(0); } }
+
+/* Date */
+.date {
+  font-size: clamp(1rem, 2.4vw, 1.9rem);
+  font-weight: 300;
+  letter-spacing: .02em;
+  text-align: center;
+}
+
+/* Controls */
+.controls {
+  position: fixed;
+  top: 16px; right: 16px;
+  display: flex;
+  gap: 4px;
+}
+.controls button {
+  font: inherit;
+  font-size: .85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: .5em .9em .5em .75em;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .2s, background .2s;
+}
+.controls svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.controls button:hover,
+.controls button:focus-visible { color: var(--digit); background: var(--shadow); outline: 0; }
+:fullscreen .controls { opacity: 0; transition: opacity .3s; }
+:fullscreen .controls:hover,
+:fullscreen .controls:focus-within { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .digit.flipping .flip-top,
+  .digit.flipping .flip-bottom { animation-duration: 1ms; animation-delay: 0s; }
+}
