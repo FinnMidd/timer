@@ -175,7 +175,8 @@ main {
 .controls button:focus-visible { color: var(--digit); background: var(--shadow); outline: 0; }
 .controls { transition: opacity .3s; }
 .controls.idle { opacity: 0; pointer-events: none; }
-.idle-cursor { cursor: none; }
+.idle-cursor,
+.idle-cursor * { cursor: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .digit.flipping .flip-top,

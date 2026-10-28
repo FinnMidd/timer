@@ -89,7 +89,7 @@ const IDLE_MS = 10000;
 let idleTimer;
 const setIdle = idle => {
   controls.classList.toggle('idle', idle);
-  document.body.classList.toggle('idle-cursor', idle);
+  document.documentElement.classList.toggle('idle-cursor', idle);
 };
 const wake = () => {
   setIdle(false);
