@@ -101,4 +101,22 @@ const wake = () => {
   }, IDLE_MS);
 };
 document.addEventListener('mousemove', wake);
-document.addEventListener('fullscreenchange', () => { updateFs(); wake(); });
+
+// Keep the screen awake while in fullscreen
+let wakeLock;
+const syncWakeLock = async () => {
+  if (!('wakeLock' in navigator)) return;
+  try {
+    if (document.fullscreenElement && !wakeLock) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } else if (!document.fullscreenElement && wakeLock) {
+      await wakeLock.release();
+    }
+  } catch {}
+};
+// The browser drops the lock when the tab is hidden, so re-acquire on return
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') syncWakeLock();
+});
+document.addEventListener('fullscreenchange', () => { updateFs(); wake(); syncWakeLock(); });
