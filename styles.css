@@ -75,7 +75,11 @@ main {
   background: var(--digit);
   opacity: .9;
 }
-.group { display: flex; gap: calc(var(--w) * .05); }
+.group {
+  display: flex;
+  gap: calc(var(--w) * .05);
+  filter: drop-shadow(0 calc(var(--h) * .05) calc(var(--h) * .06) var(--shadow));
+}
 
 .digit {
   position: relative;
@@ -87,7 +91,6 @@ main {
   font-variant-numeric: tabular-nums;
   color: var(--digit);
   border-radius: var(--r);
-  box-shadow: 0 calc(var(--h) * .05) calc(var(--h) * .12) var(--shadow);
 }
 .half {
   position: absolute;
