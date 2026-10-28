@@ -34,12 +34,12 @@ function setDigit(d, val) {
 
 function tick() {
   const now = new Date();
-  const t = [now.getHours(), now.getMinutes(), now.getSeconds()]
+  const t = [now.getHours() % 12 || 12, now.getMinutes(), now.getSeconds()]
     .map(n => String(n).padStart(2, '0')).join('');
   digits.forEach((d, i) => setDigit(d, t[i]));
   dateEl.textContent = now.toLocaleDateString(undefined, {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-  });
+  }) + ' · ' + (now.getHours() < 12 ? 'AM' : 'PM');
   setTimeout(tick, 1000 - now.getMilliseconds());
 }
 tick();
